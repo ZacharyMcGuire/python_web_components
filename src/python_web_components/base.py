@@ -106,10 +106,3 @@ class AbstractWebComponent(abc.ABC):
         content = self._content or "".join(child.render() for child in self._children if child is not None)
         attributes = f" {self.html_attributes}" if self.html_attributes else ""
         return f"<{self.html_tag}{attributes}>{content}</{self.html_tag}>"
-
-    # def render(self) -> str:
-    #     # Filter out None values from children before rendering
-    #     rendered_children = (child.render() for child in self._children if child is not None)
-    #     content = self._content or "".join(rendered_children)
-    #     attributes = f" {self.html_attributes}" if self.html_attributes else ""
-    #     return f"<{self.html_tag}{attributes}>{content}</{self.html_tag}>"
