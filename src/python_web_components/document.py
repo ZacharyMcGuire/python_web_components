@@ -20,8 +20,8 @@ class Title(AbstractWebComponent):
         return "title"
 
 
-class HtmlDocument(AbstractWebComponent):
-    def __init__(self, head: Head, body: Body, state: State | None = None):
+class Html(AbstractWebComponent):
+    def __init__(self, head: Head | None = None, body: Body | None = None, state: State | None = None):
         super().__init__(children=[head, body], state=state)
 
     @property

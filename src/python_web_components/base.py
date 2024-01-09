@@ -5,17 +5,19 @@ from python_web_components.utils import State
 
 
 class AbstractWebComponent(abc.ABC):
+    _context_stack = []
+
     def __init__(
-        self,
-        content: str | None = None,
-        children: List["AbstractWebComponent"] | None = None,
-        state: State | None = None,
-        class_: str | None = None,
-        id_: str | None = None,
-        **kwargs,
+            self,
+            content: str | None = None,
+            children: List["AbstractWebComponent"] | None = None,
+            state: State | None = None,
+            class_: str | None = None,
+            id_: str | None = None,
+            **kwargs,
     ):
         self._content = content
-        self._children = children
+        self._children = children if children is not None else []
         self._state = state
         self._class = class_
         self._id = id_
@@ -24,6 +26,27 @@ class AbstractWebComponent(abc.ABC):
         if self.state:
             self.state.subscribe(self.update)
             self.update()
+
+        context = AbstractWebComponent.current_context()
+        if context:
+            context.add_child(self)
+
+    def __enter__(self):
+        AbstractWebComponent._context_stack.append(self)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        AbstractWebComponent._context_stack.pop()
+
+    def add_child(self, child: "AbstractWebComponent") -> None:
+        self._children.append(child)
+
+    @classmethod
+    def current_context(cls):
+        if cls._context_stack:
+            return cls._context_stack[-1]
+        else:
+            return None
 
     @property
     def class_(self) -> str | None:
@@ -80,6 +103,13 @@ class AbstractWebComponent(abc.ABC):
         )
 
     def render(self) -> str:
-        content = self._content or "".join(child.render() for child in self._children)
+        content = self._content or "".join(child.render() for child in self._children if child is not None)
         attributes = f" {self.html_attributes}" if self.html_attributes else ""
         return f"<{self.html_tag}{attributes}>{content}</{self.html_tag}>"
+
+    # def render(self) -> str:
+    #     # Filter out None values from children before rendering
+    #     rendered_children = (child.render() for child in self._children if child is not None)
+    #     content = self._content or "".join(rendered_children)
+    #     attributes = f" {self.html_attributes}" if self.html_attributes else ""
+    #     return f"<{self.html_tag}{attributes}>{content}</{self.html_tag}>"

@@ -1,4 +1,4 @@
-from .document import Head, Body, Title, HtmlDocument, Script, Link
+from .document import Head, Body, Title, Html, Script, Link
 from .text import P, H1, H2
 from .multimedia import Img, Video
 from .form import Input, Button
@@ -9,7 +9,7 @@ __all__ = [
     "Head",
     "Body",
     "Title",
-    "HtmlDocument",
+    "Html",
     "Script",
     "P",
     "H1",
