@@ -16,6 +16,7 @@ class AbstractWebComponent(abc.ABC):
         id_: str | None = None,
         self_closing_tag: bool = False,
         keywords: List[str] | None = None,
+        attrs: dict | None = None,
         **kwargs,
     ):
         self._content = content
@@ -24,8 +25,9 @@ class AbstractWebComponent(abc.ABC):
         self._class = class_
         self._id = id_
         self._kwargs = kwargs
-        self._keywords = keywords if keywords is not None else []
         self._self_closing_tag = self_closing_tag
+        self._keywords = keywords if keywords is not None else []
+        self._attrs = attrs if attrs is not None else {}
 
         if self.state:
             self.state.subscribe(self.update)
@@ -106,6 +108,9 @@ class AbstractWebComponent(abc.ABC):
             " ".join(f'{key}="{value}"' for key, value in attributes.items() if value)
             + " "
             + " ".join(keyword for keyword in self._keywords if keyword).strip()
+            + " ".join(
+                f'{key}="{value}"' for key, value in self._attrs.items() if value
+            )
         ).strip()
 
     def render(self, depth: int | None = 0) -> str:
