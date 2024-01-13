@@ -20,9 +20,9 @@ class Ul(AbstractWebComponent):
 
 
 class Li(AbstractWebComponent):
-    def __init__(self, content_=None, **kwargs):
+    def __init__(self, content=None, **kwargs):
         super().__init__(**kwargs)
-        self.content = content_
+        self.content = content
 
     @property
     def html_tag(self):
