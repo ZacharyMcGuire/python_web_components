@@ -28,5 +28,6 @@ class Li(AbstractWebComponent):
     def html_tag(self):
         return "li"
 
-    def render(self):
-        return f"<{self.html_tag}>{self.content}</{self.html_tag}>"
+    def render(self, depth: int = 0):
+        indent = " " * depth * 2
+        return f"{indent}<{self.html_tag}>{self.content}</{self.html_tag}>"

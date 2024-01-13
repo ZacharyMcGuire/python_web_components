@@ -8,13 +8,15 @@ class AbstractWebComponent(abc.ABC):
     _context_stack = []
 
     def __init__(
-            self,
-            content: str | None = None,
-            children: List["AbstractWebComponent"] | None = None,
-            state: State | None = None,
-            class_: str | None = None,
-            id_: str | None = None,
-            **kwargs,
+        self,
+        content: str | None = None,
+        children: List["AbstractWebComponent"] | None = None,
+        state: State | None = None,
+        class_: str | None = None,
+        id_: str | None = None,
+        self_closing_tag: bool = False,
+        keywords: List[str] | None = None,
+        **kwargs,
     ):
         self._content = content
         self._children = children if children is not None else []
@@ -22,6 +24,8 @@ class AbstractWebComponent(abc.ABC):
         self._class = class_
         self._id = id_
         self._kwargs = kwargs
+        self._keywords = keywords if keywords is not None else []
+        self._self_closing_tag = self_closing_tag
 
         if self.state:
             self.state.subscribe(self.update)
@@ -84,25 +88,34 @@ class AbstractWebComponent(abc.ABC):
         pass
 
     @property
+    def self_closing_tag(self) -> bool:
+        return self._self_closing_tag
+
+    @property
     def html_attributes(self) -> str:
         attributes = {
             "id": self.id_,
             "class": self.class_,
-            **self._kwargs,
+            **{
+                "hx-" + key.removeprefix("hx_") if key.startswith("hx_") else key: value
+                for key, value in self._kwargs.items()
+            },
         }
 
-        # Fix HTMX kwarg names
-        for key, value in list(attributes.items()):
-            if key.startswith("hx_"):
-                value = attributes.pop(key)
-                new_key = "hx-" + key.removeprefix("hx_")
-                attributes[new_key] = value
+        return (
+            " ".join(f'{key}="{value}"' for key, value in attributes.items() if value)
+            + " "
+            + " ".join(keyword for keyword in self._keywords if keyword).strip()
+        ).strip()
 
-        return " ".join(
-            f'{key}="{value}"' for key, value in attributes.items() if value
+    def render(self, depth: int | None = 0) -> str:
+        indent = "\n" if depth != 0 else ""
+        indent += " " * depth * 2  # 2 spaces per depth level
+        content = self._content or "".join(
+            child.render(depth + 1) for child in self._children if child is not None
         )
-
-    def render(self) -> str:
-        content = self._content or "".join(child.render() for child in self._children if child is not None)
         attributes = f" {self.html_attributes}" if self.html_attributes else ""
-        return f"<{self.html_tag}{attributes}>{content}</{self.html_tag}>"
+
+        if self.self_closing_tag:
+            return f"{indent}<{self.html_tag}{attributes} />"
+        return f"{indent}<{self.html_tag}{attributes}>{content}\n{indent}</{self.html_tag}>"
