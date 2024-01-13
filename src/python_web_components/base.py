@@ -9,7 +9,7 @@ class AbstractWebComponent(abc.ABC):
 
     def __init__(
         self,
-        content: str | None = None,
+        content_: str | None = None,
         children: List["AbstractWebComponent"] | None = None,
         state: State | None = None,
         class_: str | None = None,
@@ -18,7 +18,7 @@ class AbstractWebComponent(abc.ABC):
         keywords: List[str] | None = None,
         **kwargs,
     ):
-        self._content = content
+        self._content = content_
         self._children = children if children is not None else []
         self._state = state
         self._class = class_
