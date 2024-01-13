@@ -38,7 +38,7 @@ def index():
                     ui.P("Click the button to get records...")
 
                 with ui.tag("p"):
-                    ui.tag("a", content="Python Web Components", href="#")
+                    ui.tag("a", content_="Python Web Components", href="#")
 
             ui.Script(src="https://unpkg.com/htmx.org")
             ui.Script(src="https://cdn.tailwindcss.com")
@@ -78,26 +78,26 @@ def shoelace_component_example():
                     alt="A kitten sits patiently between a terracotta pot and decorative grasses.",
                 )
 
-                ui.tag("strong", content="Mittens")
+                ui.tag("strong", content_="Mittens")
                 ui.tag("br", self_closing_tag=True)
 
                 ui.P("This kitten is as cute as he is playful. Bring him home today!")
                 ui.tag("br", self_closing_tag=True)
 
-                ui.tag("small", content="6 weeks old")
+                ui.tag("small", content_="6 weeks old")
 
                 with ui.Div(slot="footer"):
                     ui.tag(
                         "sl-button",
                         variant="primary",
                         keywords=["pill"],
-                        content="More Info",
+                        content_="More Info",
                     )
                     ui.tag("sl-rating")
 
             ui.tag(
                 "style",
-                content="""
+                content_="""
                 .card-overview {
                     max-width: 300px;
                 }
@@ -115,44 +115,3 @@ def shoelace_component_example():
             )
 
         return html.render()
-
-
-@app.route("/test")
-def test():
-    return """
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css" />
-<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"></script>
-
-<sl-card class="card-overview">
-  <img
-    slot="image"
-    src="https://images.unsplash.com/photo-1559209172-0ff8f6d49ff7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    alt="A kitten sits patiently between a terracotta pot and decorative grasses."
-  />
-
-  <strong>Mittens</strong><br />
-  <p>This kitten is as cute as he is playful. Bring him home today!</p><br />
-  <small>6 weeks old</small>
-
-  <div slot="footer">
-    <sl-button variant="primary" pill>More Info</sl-button>
-    <sl-rating></sl-rating>
-  </div>
-</sl-card>
-
-<style>
-  .card-overview {
-    max-width: 300px;
-  }
-
-  .card-overview small {
-    color: var(--sl-color-neutral-500);
-  }
-
-  .card-overview [slot='footer'] {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-</style>
-"""
