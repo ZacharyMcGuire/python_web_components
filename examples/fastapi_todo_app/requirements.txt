@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+alembic
+git+https://github.com/ZacharyMcGuire/python_web_components.git
+Faker
