@@ -20,14 +20,6 @@ class Ul(AbstractWebComponent):
 
 
 class Li(AbstractWebComponent):
-    def __init__(self, content=None, **kwargs):
-        super().__init__(**kwargs)
-        self.content = content
-
     @property
     def html_tag(self):
         return "li"
-
-    def render(self, depth: int = 0):
-        indent = " " * depth * 2
-        return f"{indent}<{self.html_tag}>{self.content}</{self.html_tag}>"
